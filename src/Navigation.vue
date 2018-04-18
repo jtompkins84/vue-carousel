@@ -1,30 +1,34 @@
 <template>
   <div class="VueCarousel-navigation">
-    <button
-      type="button"
-      aria-label="Previous page"
-      role="button"
+    <a href="#"
       class="VueCarousel-navigation-button VueCarousel-navigation-prev"
       v-on:click.prevent="triggerPageAdvance('backward')"
       v-bind:class="{ 'VueCarousel-navigation--disabled': !canAdvanceBackward }"
-      v-bind:style="`padding: ${clickTargetSize}px; margin-right: -${clickTargetSize}px;`"
-      v-html="prevLabel"></button>
-    <button
-      type="button"
-      aria-label="Next page"
-      role="button"
+      v-bind:style="`padding: ${clickTargetSize}px;
+                     margin-right: -${clickTargetSize}px;
+                     color: ${labelColor};
+                     font-size: ${labelSize}pt;`"
+      v-html="prevLabel"></a>
+    <a href="#"
       class="VueCarousel-navigation-button VueCarousel-navigation-next"
       v-on:click.prevent="triggerPageAdvance()"
       v-bind:class="{ 'VueCarousel-navigation--disabled': !canAdvanceForward }"
-      v-bind:style="`padding: ${clickTargetSize}px; margin-left: -${clickTargetSize}px;`"
-      v-html="nextLabel"></button>
+      v-bind:style="`padding: ${clickTargetSize}px;
+                     margin-left: -${clickTargetSize}px;
+                     color: ${labelColor};
+                     font-size: ${labelSize}pt;`"
+      v-html="nextLabel"></a>
   </div>
 </template>
 
 <script>
 export default {
   name: "navigation",
-  inject: ["carousel"],
+  data() {
+    return {
+      parentContainer: this.$parent
+    };
+  },
   props: {
     /**
      * Amount of padding to apply around the label in pixels
@@ -46,52 +50,49 @@ export default {
     prevLabel: {
       type: String,
       default: "◀"
+    },
+    /**
+    * Text color of the navigation buttons
+    */
+    labelColor: {
+      type: String,
+      default: "#000000"
+    },
+    /**
+    * Text font size of the navigation buttons in points
+    */
+    labelSize: {
+      type: Number,
+      default: 16
     }
   },
   computed: {
-    /**
-     * @return {Boolean} Can the slider move forward?
-     */
     canAdvanceForward() {
-      return this.carousel.canAdvanceForward || false;
+      return this.parentContainer.canAdvanceForward || false;
     },
-    /**
-     * @return {Boolean} Can the slider move backward?
-     */
     canAdvanceBackward() {
-      return this.carousel.canAdvanceBackward || false;
+      return this.parentContainer.canAdvanceBackward || false;
     }
   },
   methods: {
-    /**
-     * Trigger page change on +/- 1 depending on the direction
-     * @param {"backward"} [direction]
-     * @return {void}
-     */
     triggerPageAdvance(direction) {
-      /**
-       * @event paginationclick
-       * @type {string}
-       */
-      this.$emit("navigationclick", direction);
+      if (direction) {
+        this.$parent.advancePage(direction);
+      } else {
+        this.$parent.advancePage();
+      }
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
 .VueCarousel-navigation-button {
   position: absolute;
   top: 50%;
   box-sizing: border-box;
-  color: #000;
   text-decoration: none;
-  appearance: none;
-  border: none;
-  background-color: transparent;
-  padding: 0;
-  cursor: pointer;
-  outline: none;
+  font-size: 24pt;
 }
 
 .VueCarousel-navigation-next {

@@ -27,6 +27,8 @@
       :clickTargetSize="navigationClickTargetSize"
       :nextLabel="navigationNextLabel"
       :prevLabel="navigationPrevLabel"
+      :labelColor="navigationLabelColor"
+      :labelSize="navigationLabelSize"
       @navigationclick="handleNavigation"
     ></navigation>
   </section>
@@ -124,6 +126,23 @@ export default {
     navigationEnabled: {
       type: Boolean,
       default: false
+    },
+    /**
+     * The font color of the navigation labels
+     * Any valid CSS color is accepted
+     * (next/prev buttons)
+     */
+    navigationLabelColor: {
+      type: String,
+      default: "#000000"
+    },
+    /**
+     * The font size of the navigation labels in points
+     * (next/prev buttons)
+     */
+    navigationLabelSize: {
+      type: Number,
+      default: 16
     },
     /**
      * Text content of the navigation next button
